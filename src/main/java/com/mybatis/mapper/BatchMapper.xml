@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.BatchMapper">
+
+    <insert id="batchInsert" parameterType="list" keyProperty="id" useGeneratedKeys="true">
+       insert into batch (name,age) values
+       <foreach collection="list" item="item" separator=",">
+           (#{item.name},#{item.age})
+       </foreach>
+    </insert>
+
+    <delete id="batchDelete" parameterType="list">
+        delete from batch where id in
+        <foreach collection="ids" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="batchUpdate" parameterType="java.util.List">
+        update batch
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="name =case" suffix="end,">
+                <foreach collection="list" item="item">
+                    <if test="item.name != null">
+                        when id=#{item.id} then #{item.name}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="age =case" suffix="end,">
+                <foreach collection="list" item="item">
+                    <if test="item.age != null">
+                        when id=#{item.id} then #{item.age}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            <foreach collection="list" separator="or" item="item">
+                id = #{item.id}
+            </foreach>
+        </where>
+    </update>
+</mapper>

@@ -1,7 +1,9 @@
 package com.mybatis;
 
+import com.mybatis.entity.Batch;
 import com.mybatis.entity.Role;
 import com.mybatis.entity.Student;
+import com.mybatis.mapper.BatchMapper;
 import com.mybatis.mapper.RoleMapper;
 import com.mybatis.mapper.StudentMapper;
 import org.apache.ibatis.io.Resources;
@@ -12,6 +14,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,7 +57,7 @@ public class MainMybatis {
     public void getRole() {
         try (SqlSession sqlSession = sqlSession()){
             RoleMapper mapper = sqlSession.getMapper(RoleMapper.class);
-            Role role = mapper.getRole(1L);
+            Role role = mapper.getRole(4L);
             System.out.println(role.toString());
         }
     }
@@ -103,6 +107,54 @@ public class MainMybatis {
             StudentMapper mapper = sqlSession.getMapper(StudentMapper.class);
             Student student = mapper.getStudent(1L);
             System.out.println(student.toString());
+        }
+    }
+
+    @Test
+    public void batchInsert(){
+        try (SqlSession sqlSession = sqlSession()){
+            BatchMapper mapper = sqlSession.getMapper(BatchMapper.class);
+            List<Batch> list = new ArrayList<>();
+            Batch batch1 = new Batch(null,"b1",1);
+            Batch batch2 = new Batch(null,"b2",2);
+            Batch batch3 = new Batch(null,"b3",3);
+            list.add(batch1);
+            list.add(batch2);
+            list.add(batch3);
+            int i = mapper.batchInsert(list);
+            sqlSession.commit();
+            System.out.println(i);
+        }
+    }
+
+    @Test
+    public void batchUpdate(){
+        try (SqlSession sqlSession = sqlSession()){
+            BatchMapper mapper = sqlSession.getMapper(BatchMapper.class);
+            List<Batch> list = new ArrayList<>();
+            Batch batch1 = new Batch(4L,"b1b",11);
+            Batch batch2 = new Batch(5L,"b2b",21);
+            Batch batch3 = new Batch(6L,"b3b",31);
+            list.add(batch1);
+            list.add(batch2);
+            list.add(batch3);
+            int i = mapper.batchUpdate(list);
+            sqlSession.commit();
+            System.out.println(i);
+        }
+    }
+
+    @Test
+    public void batchDelete(){
+        try (SqlSession sqlSession = sqlSession()){
+            BatchMapper mapper = sqlSession.getMapper(BatchMapper.class);
+            List<Long> list = new ArrayList<>();
+            list.add(4L);
+            list.add(5L);
+            list.add(6L);
+            int i = mapper.batchDelete(list);
+            sqlSession.commit();
+            System.out.println(i);
         }
     }
 }
