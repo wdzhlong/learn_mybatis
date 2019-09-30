@@ -1,6 +1,7 @@
 Mybatis运行原理解析：
 
 一、通过SqlSessionFactoryBuilder的build方法构建SqlSessionFactory
+
     public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
         SqlSessionFactory var5;
         try {
