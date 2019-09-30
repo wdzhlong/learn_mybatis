@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.StudentMapper">
+    <resultMap id="studentMap" type="com.mybatis.entity.Student">
+        <id property="id" column="id"/>
+        <result property="cnname" column="cnname"/>
+        <result property="sex" column="sex"/>
+        <result property="note" column="note"/>
+        <!--
+            association:表示一对一关联映身
+            column指定传递给select语句的参数，这里是student对象的id,如果多个参数用逗号分隔
+            fetchType:立即加载还是延迟加载
+        -->
+        <association fetchType="lazy" property="studentCard" column="id" select="com.mybatis.mapper.StudentCardMapper.findStudentCardByStudentId"/>
+        <!--可能存在N+1问题-->
+        <collection fetchType="eager" property="studentLectureList" column="id" select="com.mybatis.mapper.StudentLectureMapper.findStudentLectureByStuId"/>
+    </resultMap>
+
+    <select id="getStudent" parameterType="long" resultMap="studentMap">
+        select * from student where id = #{id}
+    </select>
+</mapper>

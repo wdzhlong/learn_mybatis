@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.StudentLectureMapper">
+    <resultMap id="studentLectureResultMap" type="com.mybatis.entity.StudentLecture">
+        <id property="id" column="id"/>
+        <result property="studentId" column="student_id"/>
+        <result property="grade" column="grade"/>
+        <result property="note" column="note"/>
+        <association property="lecture" column="lecture_id" select="com.mybatis.mapper.LectureMapper.getLecture"/>
+    </resultMap>
+    
+    <select id="findStudentLectureByStuId" parameterType="long" resultMap="studentLectureResultMap">
+        select * from student_lecture where student_id = #{id}
+    </select>
+</mapper>

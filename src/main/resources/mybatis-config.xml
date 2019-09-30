@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!--属性-->
+	<!--properties是一个配置属性元素,让我们可以在配置文件上下文中使用它-->
+	<!--优先级：1在properties元素体内设置的属性首先被读取 2根据properties元素中的resource属性读取路径下属性文件
+	，或者根据url属性指定的路径读取属性文件，并覆盖已读取的同名属性。-->
+	<properties resource="jdbc.properties">
+		<property name="driver" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/mybatis"/>
+	</properties>
+	<!--设置-->
+	<settings>
+		<!--该配置影响所有映射器中配置的缓存全局开关，默认true-->
+		<setting name="cacheEnabled" value="true"/>
+		<!--延迟加载的全局开关。当开启时，所有关联对象都会延迟加载。特定关联关系中可通过
+		设置fetchType属性来覆盖该项的开关状态,默认false-->
+		<!--<setting name="lazyLoadingEnabled" value="true"/>-->
+		<!--当开启时，任何方法的调用都会加载该对象的所有属性。 否则，每个属性会按需加载,在 3.4.1 及之前的版本默认值为 true-->
+		<setting name="aggressiveLazyLoading" value="false"/>
+		<!--是否允许单一语句返回多结果集（需要驱动支持）,默认true-->
+		<setting name="multipleResultSetsEnabled" value="true"/>
+		<!--允许 JDBC 支持自动生成主键，需要驱动支持。 如果设置为 true 则这个设置强制使用自动生成主键，尽管一些驱动不能支持但仍可正常工作（比如 Derby）-->
+		<setting name="useGeneratedKeys" value="false"/>
+		<!--指定 MyBatis 应如何自动映射列到字段或属性。 NONE 表示取消自动映射；PARTIAL 只会自动映射没有定义嵌套结果集映射的结果集。 FULL 自动映射所有属性-->
+		<setting name="autoMappingBehavior" value="PARTIAL"/>
+		<!--配置默认的执行器。SIMPLE 就是普通的执行器；REUSE 执行器会重用预处理语句（prepared statements）； BATCH 执行器将重用语句并执行批量更新。-->
+		<setting name="defaultExecutorType" value="SIMPLE"/>
+		<!--设置超时时间，它决定驱动等待数据库响应的秒数。未设置 (null)-->
+		<setting name="defaultStatementTimeout" value="25"/>
+		<!--为驱动的结果集获取数量（fetchSize）设置一个提示值。此参数只可以在查询设置中被覆盖。未设置 (null)-->
+		<setting name="defaultFetchSize" value="500"/>
+		<!--是否开启自动驼峰命名规则（camel case）映射，即从经典数据库列名 A_COLUMN 到经典 Java 属性名 aColumn 的类似映射。False-->
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+		<!--MyBatis 利用本地缓存机制（Local Cache）防止循环引用（circular references）和加速重复嵌套查询。
+		默认值为 SESSION，这种情况下会缓存一个会话中执行的所有查询。 若设置值为 STATEMENT，本地会话仅用在
+		语句执行上，对相同 SqlSession 的不同调用将不会共享数据。SESSION-->
+		<setting name="localCacheScope" value="SESSION"/>
+		<!--当没有为参数提供特定的 JDBC 类型时，为空值指定 JDBC 类型。 某些驱动需要指定列的 JDBC 类型，
+		多数情况直接用一般类型即可，比如 NULL、VARCHAR 或 OTHER。OTHER-->
+		<setting name="jdbcTypeForNull" value="OTHER"/>
+		<!--当返回行的所有列都是空时，MyBatis默认返回 null。 当开启这个设置时，MyBatis会返回一个空实例。
+		请注意，它也适用于嵌套的结果集 （如集合或关联）。（新增于 3.4.2）false-->
+		<!--<setting name="returnInstanceForEmptyRow" value="false"/>-->
+	</settings>
+	<!--类型命名-->
+	<typeAliases>
+		<!--单个别名定义-->
+		<!--<typeAlias type="com.mybatis.entity.Role" alias="role"/>-->
+		<!--批量定义类型别名，在没有注解的情况下，会使用Bean的首字母小写的非限定类名来作为它的别名-->
+		<package name="com.mybatis.entity"/>
+	</typeAliases>
+	<!--类型处理器-->
+	<!--MyBatis 在预处理语句（PreparedStatement）中设置一个参数时，还是从结果集中取出一个值时，
+	 都会用类型处理器将获取的值以合适的方式转换成 Java 类型-->
+	<!--<typeHandlers>
+
+	</typeHandlers>-->
+	<!--对象工厂-->
+	<!--MyBatis 每次创建结果对象的新实例时，它都会使用一个对象工厂（ObjectFactory）实例来完成。 默认的对象工
+	厂需要做的仅仅是实例化目标类，要么通过默认构造方法，要么在参数映射存在的时候通过参数构造方法来实例化。 如
+	果想覆盖对象工厂的默认行为，则可以通过创建自己的对象工厂来实现。-->
+	<objectFactory type="com.mybatis.custom.MyObjectFactory">
+		<property name="name" value="MyObjectFactory"/>
+	</objectFactory>
+	<!--插件	-->
+	<!--<plugins>
+		<plugin interceptor=""></plugin>
+	</plugins>-->
+	<!--配置环境-->
+	<environments default="development">
+		<!--环境变量-->
+		<environment id="development">
+			<!--事务管理器-->
+			<transactionManager type="JDBC">
+				<property name="autoCommit" value="false"/>
+			</transactionManager>
+			<!--数据源-->
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<!--数据库厂商标识-->
+	<!--MyBatis 可以根据不同的数据库厂商执行不同的语句，这种多厂商的支持是基于映射语句中的 databaseId 属性。
+	 MyBatis 会加载不带 databaseId 属性和带有匹配当前数据库 databaseId 属性的所有语句。 如果同时找到带
+	 有 databaseId 和不带 databaseId 的相同语句，则后者会被舍弃。-->
+	<!--DB_VENDOR是启动MyBatis内部注册的策略器，首先Mybatis会将你的配置读入Configuration类里面，在连接数据
+	库后调用getDatabaseProductName()方法去获取数据库的信息，然后用我们配置的name值去做匹配来得到DatabaseId。-->
+	<databaseIdProvider type="DB_VENDOR">
+		<property name="SQL Server" value="sqlserver"/>
+		<property name="DB2" value="db2"/>
+		<property name="Oracle" value="oracle" />
+	</databaseIdProvider>
+	<!-- 将我们写好的sql映射文件（EmployeeMapper.xml）一定要注册到全局配置文件（mybatis-config.xml）中 -->
+	<!--映射器-->
+	<mappers>
+		<!--用文件路径引入映射器-->
+		<!--<mapper resource="com/mybatis/mapper/RoleMapper.xml" />
+		&lt;!&ndash;用类注册引入映射器&ndash;&gt;
+		<mapper class="com.mybatis.mapper.RoleMapper"/>-->
+		<!--用包名引入映射器-->
+		<package name="com.mybatis.mapper"/>
+		<!--用url引入映射器-->
+		<!--<mapper url=""/>-->
+	</mappers>
+</configuration>

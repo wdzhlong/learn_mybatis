@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.StudentCardMapper">
+    <resultMap id="studentCardMap" type="com.mybatis.entity.StudentCard">
+        <id property="id" column="id"/>
+        <result property="native_" column="native_"/>
+        <result property="issueDate" column="issueDate"/>
+        <result property="endDate" column="endDate"/>
+        <result property="note" column="note"/>
+    </resultMap>
+    
+    <select id="findStudentCardByStudentId" parameterType="long" resultMap="studentCardMap">
+        select * from student_card where student_id = #{studentId}
+    </select>
+</mapper>
